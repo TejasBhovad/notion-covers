@@ -56,6 +56,9 @@ module.exports = {
         accent: "#D4B7F7",
         background: "#F3F9FE",
         text: "#02090F",
+        darkNotion: "#191919",
+        darkNotionContainer: "#262626",
+        darkNotionText: "#FFFFFF",
       },
       borderRadius: {
         lg: "var(--radius)",
