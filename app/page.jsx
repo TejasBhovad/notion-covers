@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/app/components/Navbar";
+import { useRouter } from "next/navigation";
 import {
   Collapsible,
   CollapsibleContent,
@@ -9,8 +10,50 @@ import {
 import { Button } from "@/components/ui/button";
 
 const Home = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [gradient, setGradient] = useState({
+    color1: "fff",
+    color2: "000",
+    direction: "to-r",
+  });
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.code === "Space") {
+        generateGradient();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const generateGradient = () => {
+    //  color should be valid tailwind color like red-500
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    const randomColor2 = Math.floor(Math.random() * 16777215).toString(16);
+    // direction should to right to left and other tailwind directions
+    const directions = [
+      "to-r",
+      "to-l",
+      "to-t",
+      "to-b",
+      "to-tr",
+      "to-tl",
+      "to-br",
+      "to-bl",
+    ];
+    const randomDirection =
+      directions[Math.floor(Math.random() * directions.length)];
+    setGradient({
+      color1: `${randomColor}`,
+      color2: `${randomColor2}`,
+      direction: `${randomDirection}`,
+    });
+    router.push(`/${randomDirection}-${randomColor}-${randomColor2}`);
+  };
   return (
     <div className="w-full h-full bg-background dark:bg-darkNotion">
       <Navbar />
@@ -52,7 +95,12 @@ const Home = () => {
               <div className="w-full h-8 bg-green-200 gradient rounded-b-sm rounded-t-none flex transition-all flex"></div>
             </CollapsibleContent>
           </Collapsible>
-          <Button className="sm:hidden flex">Generate</Button>
+          <Button className="sm:hidden flex" onClick={generateGradient}>
+            Generate
+          </Button>
+          {gradient.color1}
+          {gradient.color2}
+          {gradient.direction}
         </div>
       </div>
     </div>

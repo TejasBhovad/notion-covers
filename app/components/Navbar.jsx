@@ -5,7 +5,6 @@ import Sun from "@/app/components/logos/Sun";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = React.useState(false);
-
   const handleToggle = () => {
     setDarkMode(!darkMode);
     localStorage.setItem("darkMode", !darkMode);
