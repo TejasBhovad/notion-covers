@@ -7,6 +7,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 
 const page = ({ params }) => {
@@ -23,7 +31,7 @@ const page = ({ params }) => {
     };
     return directionMap[direction];
   };
-  const color = "1fc74f";
+
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [gradient, setGradient] = useState({
@@ -31,12 +39,16 @@ const page = ({ params }) => {
     color2: "000",
     direction: "to-r",
   });
-  const currentGradient = {
+
+  const [currentGradient, setCurrentGradient] = useState({
     color1: params.gradient.split("-")[2].padStart(6, "0"),
     color2: params.gradient.split("-")[3].padStart(6, "0"),
     direction:
       params.gradient.split("-")[0] + "-" + params.gradient.split("-")[1],
-  };
+  });
+  const [direction, setDirection] = useState(
+    params.gradient.split("-")[0] + "-" + params.gradient.split("-")[1]
+  );
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code === "Space") {
@@ -48,6 +60,14 @@ const page = ({ params }) => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  // update gradient on direction change
+  useEffect(() => {
+    setCurrentGradient({
+      ...currentGradient,
+      direction: direction,
+    });
+  }, [direction]);
 
   const generateGradient = () => {
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -124,14 +144,77 @@ const page = ({ params }) => {
           </div>
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger
-              className={`w-full h-8 bg-secondary gradient rounded-sm flex transition-all flex items-center justify-center ${
+              className={`w-full h-8 bg-white dark:bg-darkNotion border  gradient rounded-sm flex transition-all flex items-center justify-center ${
                 isOpen ? "rounded-b-none" : ""
               }`}
             >
               Edit colors
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="w-full h-8 bg-green-200 gradient rounded-b-sm rounded-t-none flex transition-all flex"></div>
+              <div className="w-full h-auto bg-white dark:bg-darkNotion border border-t-0 gradient rounded-b-sm rounded-t-none flex transition-all flex-col px-4 py-4 gap-4 transition">
+                <div className="w-full flex gap-2 items-center">
+                  <span className="w-1/5 hidden sm:flex ">Direction </span>
+                  <Select
+                    className="bg-white dark:bg-darkNotionContainer"
+                    onValueChange={(value) => {
+                      setDirection(value);
+                    }}
+                    defaultValue={currentGradient.direction}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="to-r">Right</SelectItem>
+                      <SelectItem value="to-l">Left</SelectItem>
+                      <SelectItem value="to-t">Top</SelectItem>
+                      <SelectItem value="to-b">Bottom</SelectItem>
+                      <SelectItem value="to-tr">Top Right</SelectItem>
+                      <SelectItem value="to-tl">Top Left</SelectItem>
+                      <SelectItem value="to-br">Bottom Right</SelectItem>
+                      <SelectItem value="to-bl">Bottom Left</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="w-full flex gap-2 items-center">
+                  <span className="hidden sm:flex w-1/4 ">Color 1</span>{" "}
+                  <div
+                    className="rounded-sm w-full h-7 relative border"
+                    style={{ backgroundColor: `#${currentGradient.color1}` }}
+                  >
+                    <input
+                      type="color"
+                      value={`#${currentGradient.color1}`}
+                      onChange={(e) => {
+                        setCurrentGradient({
+                          ...currentGradient,
+                          color1: e.target.value.slice(1),
+                        });
+                      }}
+                      className="rounded-full absolute inset-0 opacity-0 cursor-pointer w-full h-full box-border"
+                    />
+                  </div>
+                </div>
+                <div className="w-full flex gap-2 items-center">
+                  <span className="hidden sm:flex w-1/4">Color 1</span>{" "}
+                  <div
+                    className="rounded-sm w-full h-7 relative border"
+                    style={{ backgroundColor: `#${currentGradient.color2}` }}
+                  >
+                    <input
+                      type="color"
+                      value={`#${currentGradient.color2}`}
+                      onChange={(e) => {
+                        setCurrentGradient({
+                          ...currentGradient,
+                          color2: e.target.value.slice(1),
+                        });
+                      }}
+                      className="rounded-full absolute inset-0 opacity-0 cursor-pointer w-full h-full box-border"
+                    />
+                  </div>
+                </div>
+              </div>
             </CollapsibleContent>
           </Collapsible>
           <Button className="sm:hidden flex" onClick={generateGradient}>
