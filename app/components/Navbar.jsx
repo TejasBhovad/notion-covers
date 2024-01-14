@@ -25,16 +25,13 @@ const Navbar = () => {
   }, [darkMode]);
   return (
     <div className="absolute w-full h-16 bg-background dark:bg-darkNotion border-b-2 flex">
-      <div className="w-1/3 h-full w-full  flex items-center justify-start px-4 gap-1 flex">
+      <div className="sm:w-1/2 w-3/4 h-full flex items-center justify-start px-4 gap-1 flex">
         <Logo />
         <span className=" font-semibold text-lg text-secondary opacity-85 dark:opacity-100">
           Gradient Covers
         </span>
       </div>
-      <div className="sm:flex hidden w-1/3 h-full w-full  flex items-center justify-center px-4">
-        -
-      </div>
-      <div className="w-1/3 h-full w-full flex items-center justify-end px-4">
+      <div className="sm:w-1/2 w-1/4 h-full flex items-center justify-end px-4">
         <button
           onClick={handleToggle}
           className="w-8 h-8 rounded-full flex items-center justify-center"

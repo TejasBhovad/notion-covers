@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import html2canvas from "html2canvas";
 import Download from "@/app/components/logos/Download";
 import Share from "@/app/components/logos/Share";
+import About from "@/app/components/logos/About";
 import {
   Collapsible,
   CollapsibleContent,
@@ -64,7 +65,6 @@ const page = ({ params }) => {
     };
   }, []);
 
-  // update gradient on direction change
   useEffect(() => {
     setCurrentGradient({
       ...currentGradient,
@@ -77,7 +77,8 @@ const page = ({ params }) => {
 
     html2canvas(gradientDiv).then((canvas) => {
       const link = document.createElement("a");
-      link.download = "gradient.png";
+      const url = params.gradient;
+      link.download = `gradient-${url}.png`;
       link.href = canvas.toDataURL();
       link.click();
     });
@@ -179,7 +180,14 @@ const page = ({ params }) => {
                 </span>
               </div>
             </div>
-            <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm"></div>
+            <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm hover:scale-105 transition-transform cursor-pointer active:scale-95">
+              <div className="w-full h-full flex flex-col items-center justify-center p-2 gap-1">
+                <About className="w-6 h-6" />
+                <span className="font-medium text-text dark:text-darkNotionText text-sm">
+                  About
+                </span>
+              </div>
+            </div>
           </div>
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger
@@ -259,7 +267,7 @@ const page = ({ params }) => {
           <Button className="sm:hidden flex" onClick={generateGradient}>
             Generate
           </Button>
-          {JSON.stringify(currentGradient)}
+          {/* div for downloading */}
           <div
             id="gradientDiv"
             style={{
