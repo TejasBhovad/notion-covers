@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/app/components/Navbar";
 import { useRouter } from "next/navigation";
+import html2canvas from "html2canvas";
+import Download from "@/app/components/logos/Download";
+import Share from "@/app/components/logos/Share";
 import {
   Collapsible,
   CollapsibleContent,
@@ -68,6 +71,22 @@ const page = ({ params }) => {
       direction: direction,
     });
   }, [direction]);
+
+  const downloadGradient = () => {
+    const gradientDiv = document.getElementById("gradientDiv");
+
+    html2canvas(gradientDiv).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "gradient.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  };
+
+  const copyURL = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+  };
 
   const generateGradient = () => {
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -138,13 +157,33 @@ const page = ({ params }) => {
             </div>
           </div>
           <div className="w-full h-24 gradient rounded-sm flex transition-all justify-center sm:justify-start flex gap-4">
-            <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm"></div>
-            <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm"></div>
+            <div
+              className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm hover:scale-105 transition-transform cursor-pointer active:scale-95"
+              onClick={downloadGradient}
+            >
+              <div className="w-full h-full flex flex-col items-center justify-center p-2 gap-1">
+                <Download className="w-8 h-8" />
+                <span className="font-medium text-text dark:text-darkNotionText text-sm">
+                  Download
+                </span>
+              </div>
+            </div>
+            <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm hover:scale-105 transition-transform cursor-pointer active:scale-95">
+              <div
+                className="w-full h-full flex flex-col items-center justify-center p-2 gap-1"
+                onClick={copyURL}
+              >
+                <Share className="w-6 h-6" />
+                <span className="font-medium text-text dark:text-darkNotionText text-sm">
+                  Share
+                </span>
+              </div>
+            </div>
             <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm"></div>
           </div>
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger
-              className={`w-full h-8 bg-white dark:bg-darkNotion border  gradient rounded-sm flex transition-all flex items-center justify-center ${
+              className={`w-full h-8 bg-white dark:bg-darkNotion border  gradient rounded-sm flex items-center justify-center ${
                 isOpen ? "rounded-b-none" : ""
               }`}
             >
@@ -221,6 +260,18 @@ const page = ({ params }) => {
             Generate
           </Button>
           {JSON.stringify(currentGradient)}
+          <div
+            id="gradientDiv"
+            style={{
+              width: "1500px",
+              height: "600px",
+              backgroundImage: `linear-gradient(${convertDirection(
+                currentGradient.direction
+              )}, #${currentGradient.color1}, #${currentGradient.color2})`,
+              position: "absolute",
+              left: "-9999px",
+            }}
+          ></div>
         </div>
       </div>
     </div>
