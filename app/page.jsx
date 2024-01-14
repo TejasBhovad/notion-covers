@@ -1,15 +1,14 @@
 "use client";
+import { useToast } from "@/components/ui/use-toast";
+import AI from "@/app/components/logos/AI";
 import { useState, useEffect } from "react";
 import Navbar from "@/app/components/Navbar";
 import { useRouter } from "next/navigation";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+
 import { Button } from "@/components/ui/button";
 
 const Home = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [gradient, setGradient] = useState({
@@ -17,7 +16,29 @@ const Home = () => {
     color2: "000",
     direction: "to-r",
   });
+  const [isMounted, setIsMounted] = useState(false);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const firstVisit = sessionStorage.getItem("firstVisit");
+
+    if (!firstVisit && isMounted) {
+      // Show the toast message
+      toast({
+        title: "💡 Tip",
+        description: "Use the spacebar to generate new gradients",
+        status: "info",
+        duration: 7500,
+        isClosable: true,
+      });
+
+      // Set the flag in sessionStorage
+      sessionStorage.setItem("firstVisit", "true");
+    }
+  }, [isMounted, toast]);
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.code === "Space") {
@@ -59,7 +80,9 @@ const Home = () => {
       <Navbar />
       <div className="w-full h-full pt-16 sm:px-12 px-8 flex flex-col items-center ">
         <div className="w-full h-full pt-12 gap-6 flex flex-col max-w-[875px]">
-          <div className="w-full h-32  bg-gradient-to-r from-accent to-primary gradient rounded-sm hidden sm:flex transition-all"></div>
+          <div className="w-full h-32  bg-gradient-to-r from-accent to-primary gradient rounded-sm hidden sm:flex transition-all px-4 py-4 text-4xl font-extrabold text-text text-opacity-25 flex items-center justify-center">
+            Create Notion Covers Easily
+          </div>
           <div className="w-full h-48 preview rounded-sm flex transition-all flex justify-between gap-6">
             <div className="aspect-square h-full rounded-sm hidden sm:flex transition-all flex flex-col drop-shadow-sm">
               <div className="w-full h-4/5 bg-gradient-to-r from-accent to-primary rounded-t-sm"></div>
@@ -83,24 +106,13 @@ const Home = () => {
             <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm"></div>
             <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm"></div>
           </div>
-          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger
-              className={`w-full h-8 bg-secondary gradient rounded-sm flex transition-all flex items-center justify-center ${
-                isOpen ? "rounded-b-none" : ""
-              }`}
-            >
-              Edit colors
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div className="w-full h-8 bg-green-200 gradient rounded-b-sm rounded-t-none flex transition-all flex"></div>
-            </CollapsibleContent>
-          </Collapsible>
-          <Button className="sm:hidden flex" onClick={generateGradient}>
-            Generate
+          <Button
+            className=" flex bg-darkNotion bg-opacity-85 transition-color hover:bg-darkNotion dark:bg-background dark:hover:bg-opacity-20 dark:bg-opacity-10 border transition-color text-white font-medium gap-3 text-md font-semibold p-2 items-center justify-center rounded-sm w-full"
+            onClick={generateGradient}
+          >
+            <AI className="w-6 h-6" />
+            Create Gradient
           </Button>
-          {gradient.color1}
-          {gradient.color2}
-          {gradient.direction}
         </div>
       </div>
     </div>

@@ -6,6 +6,16 @@ import html2canvas from "html2canvas";
 import Download from "@/app/components/logos/Download";
 import Share from "@/app/components/logos/Share";
 import About from "@/app/components/logos/About";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -35,9 +45,32 @@ const page = ({ params }) => {
     };
     return directionMap[direction];
   };
-
+  const { toast } = useToast();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const firstVisit = sessionStorage.getItem("firstVisit");
+
+    if (!firstVisit && isMounted) {
+      // Show the toast message
+      toast({
+        title: "💡 Tip",
+        description: "Use the spacebar to generate new gradients",
+        status: "info",
+        duration: 7500,
+        isClosable: true,
+      });
+
+      // Set the flag in sessionStorage
+      sessionStorage.setItem("firstVisit", "true");
+    }
+  }, [isMounted, toast]);
   const [gradient, setGradient] = useState({
     color1: "fff",
     color2: "000",
@@ -87,6 +120,21 @@ const page = ({ params }) => {
   const copyURL = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
+    toast({
+      title: "Copied to clipboard",
+      description: "URL copied to clipboard",
+      status: "success",
+
+      isClosable: true,
+    });
+  };
+
+  const handleGithubClick = () => {
+    router.push("https://github.com/tejasbhovad/notion-covers");
+  };
+
+  const handleTwitterClick = () => {
+    router.push("https://twitter.com/tejas_bhovad");
   };
 
   const generateGradient = () => {
@@ -135,7 +183,7 @@ const page = ({ params }) => {
                   )}, #${currentGradient.color1}, #${currentGradient.color2})`,
                 }}
               ></div>
-              <div className="w-full h-1/5 bg-white dark:bg-darkNotionContainer rounded-b-sm flex items-center justify-center">
+              <div className="w-full h-1/5 bg-white dark:bg-darkNotionContainer rounded-b-sm flex items-center justify-start px-3">
                 <span className="font-semibold text-text dark:text-darkNotionText ">
                   Project Title
                 </span>
@@ -150,7 +198,7 @@ const page = ({ params }) => {
                   )}, #${currentGradient.color1}, #${currentGradient.color2})`,
                 }}
               ></div>
-              <div className="w-full h-1/5 bg-white dark:bg-darkNotionContainer rounded-b-sm flex items-center justify-center">
+              <div className="w-full h-1/5 bg-white dark:bg-darkNotionContainer rounded-b-sm flex items-center justify-start px-3">
                 <span className="font-semibold text-text dark:text-darkNotionText ">
                   Project Title
                 </span>
@@ -164,7 +212,7 @@ const page = ({ params }) => {
             >
               <div className="w-full h-full flex flex-col items-center justify-center p-2 gap-1">
                 <Download className="w-8 h-8" />
-                <span className="font-medium text-text dark:text-darkNotionText text-sm">
+                <span className="font-medium text-text dark:text-darkNotionText text-sm ">
                   Download
                 </span>
               </div>
@@ -180,14 +228,40 @@ const page = ({ params }) => {
                 </span>
               </div>
             </div>
-            <div className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm hover:scale-105 transition-transform cursor-pointer active:scale-95">
-              <div className="w-full h-full flex flex-col items-center justify-center p-2 gap-1">
-                <About className="w-6 h-6" />
-                <span className="font-medium text-text dark:text-darkNotionText text-sm">
-                  About
-                </span>
-              </div>
-            </div>
+            <Dialog>
+              <DialogTrigger className="aspect-square h-full bg-white dark:bg-darkNotionContainer rounded-sm drop-shadow-sm hover:scale-105 transition-transform cursor-pointer active:scale-95">
+                <div className="w-full h-full flex flex-col items-center justify-center p-2 gap-1">
+                  <About className="w-6 h-6" />
+                  <span className="font-medium text-text dark:text-darkNotionText text-sm">
+                    About
+                  </span>
+                </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>About</DialogTitle>
+                  <DialogDescription>
+                    Gradient covers is a tool to generate beautiful gradients
+                    for your next project in Notion
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="w-full h-full flex items-center justify-start gap-2">
+                  <span
+                    onClick={handleGithubClick}
+                    className="px-3 py-0.5 bg-black dark:bg-white text-white dark:text-black rounded-sm text-sm font-medium cursor-pointer"
+                  >
+                    Github
+                  </span>
+                  <span
+                    onClick={handleTwitterClick}
+                    className="px-3 py-0.5 bg-black dark:bg-white text-white dark:text-black rounded-sm text-sm font-medium cursor-pointer"
+                  >
+                    Twitter
+                  </span>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger
@@ -264,7 +338,10 @@ const page = ({ params }) => {
               </div>
             </CollapsibleContent>
           </Collapsible>
-          <Button className="sm:hidden flex" onClick={generateGradient}>
+          <Button
+            className="sm:hidden flex bg-secondary hover:bg-accent transition-color text-white dark:text-black  font-medium"
+            onClick={generateGradient}
+          >
             Generate
           </Button>
           {/* div for downloading */}
