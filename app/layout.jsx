@@ -1,8 +1,14 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { PHProvider } from "./providers";
+import dynamic from "next/dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const PostHogPageView = dynamic(() => import("./PostHogPageView"), {
+  ssr: false,
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -12,10 +18,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="w-full h-full">
-      <body className={`${inter.className} w-full h-full`}>
-        {children}
-        <Toaster />
-      </body>
+      <PHProvider>
+        <body className={`${inter.className} w-full h-full`}>
+          <PostHogPageView />
+          {children}
+          <Toaster />
+        </body>
+      </PHProvider>
     </html>
   );
 }

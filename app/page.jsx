@@ -4,10 +4,11 @@ import AI from "@/app/components/logos/AI";
 import { useState, useEffect } from "react";
 import Navbar from "@/app/components/Navbar";
 import { useRouter } from "next/navigation";
-
+import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 
 const Home = () => {
+  const posthog = usePostHog();
   const { toast } = useToast();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -52,6 +53,7 @@ const Home = () => {
   }, []);
 
   const generateGradient = () => {
+    posthog?.capture("generate_gradient");
     //  color should be valid tailwind color like red-500
     const randomColor = Math.floor(Math.random() * 16777215).toString(16);
     const randomColor2 = Math.floor(Math.random() * 16777215).toString(16);

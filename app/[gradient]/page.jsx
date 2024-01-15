@@ -7,6 +7,7 @@ import Download from "@/app/components/logos/Download";
 import Share from "@/app/components/logos/Share";
 import About from "@/app/components/logos/About";
 import { useToast } from "@/components/ui/use-toast";
+import { usePostHog } from "posthog-js/react";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const page = ({ params }) => {
+  const posthog = usePostHog();
   const convertDirection = (direction) => {
     const directionMap = {
       "to-r": "to right",
@@ -106,6 +108,7 @@ const page = ({ params }) => {
   }, [direction]);
 
   const downloadGradient = () => {
+    posthog?.capture("download_gradient");
     const gradientDiv = document.getElementById("gradientDiv");
 
     html2canvas(gradientDiv).then((canvas) => {
@@ -118,6 +121,7 @@ const page = ({ params }) => {
   };
 
   const copyURL = () => {
+    posthog?.capture("copy_url");
     const url = window.location.href;
     navigator.clipboard.writeText(url);
     toast({
@@ -130,10 +134,12 @@ const page = ({ params }) => {
   };
 
   const handleGithubClick = () => {
+    posthog?.capture("github_click");
     router.push("https://github.com/tejasbhovad/notion-covers");
   };
 
   const handleTwitterClick = () => {
+    posthog?.capture("twitter_click");
     router.push("https://twitter.com/tejas_bhovad");
   };
 
@@ -158,6 +164,7 @@ const page = ({ params }) => {
       color2: `${randomColor2}`,
       direction: `${randomDirection}`,
     });
+    posthog?.capture("generate_gradient");
     router.push(`/${randomDirection}-${randomColor}-${randomColor2}`);
   };
   return (
@@ -339,7 +346,7 @@ const page = ({ params }) => {
             </CollapsibleContent>
           </Collapsible>
           <Button
-            className="sm:hidden flex bg-secondary hover:bg-accent transition-color text-white dark:text-black  font-medium"
+            className="z-10 sm:hidden flex bg-secondary hover:bg-accent transition-color text-white dark:text-black  font-medium"
             onClick={generateGradient}
           >
             Generate
