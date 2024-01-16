@@ -8,10 +8,10 @@ import { usePostHog } from "posthog-js/react";
 import { Button } from "@/components/ui/button";
 
 const Home = () => {
-  const posthog = usePostHog();
   const { toast } = useToast();
+  const posthog = usePostHog();
+
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
   const [gradient, setGradient] = useState({
     color1: "fff",
     color2: "000",

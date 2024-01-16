@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       <PHProvider>
         <body className={`${inter.className} w-full h-full`}>
           <PostHogPageView />
-          {children}
+          <main className="w-full h-full"> {children}</main>
           <Toaster />
         </body>
       </PHProvider>
