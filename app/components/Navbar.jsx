@@ -32,7 +32,7 @@ const Navbar = () => {
       >
         <Logo />
         <span className=" font-semibold text-lg text-secondary opacity-85 dark:opacity-100">
-          Gradient Covers
+          Notion Gradients
         </span>
       </Link>
       <div className="sm:w-1/2 w-1/4 h-full flex items-center justify-end px-4">

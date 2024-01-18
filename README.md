@@ -1,9 +1,17 @@
 # Notion Cover Generator
 
-> **Progress:** in Development
+## Description
 
-This tool generates a gradient cover image for your notion page.
+Simple website to generate a cover gradient image for your notion page.
 
-## Future Features
+![Notion Cover Generator](assets/demo.jpeg)
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vercel](https://vercel.com/)
+
+## Future Scope
 
 Create a notion community plugin that allows you to generate a cover image for your notion page.
